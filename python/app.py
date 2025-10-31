@@ -1,14 +1,8 @@
-from collections import Counter
-import re
+import requests
 
-text = input("요약할 문장을 입력하세요: ")
+url = "https://api.exchangerate.host/latest?base=USD"
+rates = requests.get(url).json()["rates"]
 
-words = re.findall(r'\w+', text.lower())
-common = [w for w, _ in Counter(words).most_common(5)]
-
-sentences = re.split(r'(?<=[.!?]) +', text)
-summary = [s for s in sentences if any(w in s.lower() for w in common)]
-
-print("\n📄 요약 결과:")
-for s in summary[:3]:
-    print("-", s.strip())
+amount = float(input("USD 금액: "))
+target = input("변환할 통화 (KRW, JPY, EUR 등): ").upper()
+print(f"{amount} USD = {amount * rates[target]:.2f} {target}")
